@@ -1,0 +1,44 @@
+{% load crispy_forms_field %}
+
+{% if field.is_hidden %}
+    {{ field }}
+{% else %}
+    <{% if tag %}{{ tag }}{% else %}div{% endif %} id="div_{{ field.auto_id }}" class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}">
+    {% if field.label and form_show_labels %}
+        <label for="{{ field.id_for_label }}" class="{% if label_class %}{{ label_class }}{% else %}block font-semibold text-sm mb-1{% endif %}">
+            {{ field.label|safe }}{% if field.field.required %}<span> * </span>{% endif %}
+        </label>
+    {% endif %}
+    {% if field|is_select %}
+        <div class="{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+            {% include 'daisy/layout/select.html' %}
+        </div>
+    {% elif field|is_checkbox %}
+        <div class="{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+            {% include 'daisy/layout/checkbox.html' %}
+        </div>
+    {% elif field|is_checkboxselectmultiple %}
+        <div class="{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+            {% include 'daisy/layout/checkboxselectmultiple.html' %}
+        </div>
+    {% elif field|is_radioselect %}
+        <div class="{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+            {% include 'daisy/layout/radioselect.html' %}
+        </div>
+    {% elif field|is_file %}
+        <div class="{% if field_class %}{{ field_class }}{% else %}mb-2{% endif %}"{% if flat_attrs %} {{ flat_attrs|safe }}{% endif %}>
+            {% crispy_field field 'class' 'w-full file-input' %}
+        </div>
+    {% else %}
+        {% if field.errors %}
+            {% crispy_field field 'class' 'input w-full input-error' %}
+        {% else %}
+            {% crispy_field field 'class' 'input w-full' %}
+        {% endif %}
+    {% endif %}
+
+    {% include 'daisy/layout/help_text_and_errors.html' %}
+
+    </{% if tag %}{{ tag }}{% else %}div{% endif %}>
+
+{% endif %}

@@ -1,0 +1,8 @@
+<input 
+    type="checkbox" 
+    {% if field.value %}
+    checked 
+    {% endif %}
+    class="toggle" 
+    name="{{ field.html_name }}" 
+/>

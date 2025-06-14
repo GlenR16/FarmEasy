@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load global_extras %}
+{% block content %}
+<div class="p-4 flex flex-col gap-4 w-full">
+    <ul class="menu menu-horizontal bg-base-200 gap-2 rounded-box w-full">
+        <li>
+            <a href="{% url 'moderator' %}" class="menu-{% is_url_active 'moderator' %}">Home</a>
+        </li>
+        <li>
+            <a href="{% url 'moderator_farmer_verification' %}" class="menu-{% is_url_active 'moderator_farmer_verification' %}" >Farmer Verifications</a>
+        </li>
+        <li>
+            <a href="{% url 'moderator_category' %}" class="menu-{% is_url_active 'moderator_category' %}" >Category Approvals</a>
+        </li>
+        <li>
+            <a href="{% url 'moderator_coupon' %}" class="menu-{% is_url_active 'moderator_coupon' %}" >Coupon</a>
+        </li>
+    </ul>
+    {% block subcontent %}
+    
+    {% endblock subcontent %}
+</div>
+{% endblock content %}

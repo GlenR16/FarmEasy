@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="p-4 w-full">
+	<h1 class="text-3xl font-bold inline-flex items-center justify-center gap-2 w-full">
+        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 15L15 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M15.5 14.5C15.5 15.0523 15.0523 15.5 14.5 15.5C13.9477 15.5 13.5 15.0523 13.5 14.5C13.5 13.9477 13.9477 13.5 14.5 13.5C15.0523 13.5 15.5 13.9477 15.5 14.5Z" fill="currentColor"></path> <path d="M10.5 9.5C10.5 10.0523 10.0523 10.5 9.5 10.5C8.94772 10.5 8.5 10.0523 8.5 9.5C8.5 8.94772 8.94772 8.5 9.5 8.5C10.0523 8.5 10.5 8.94772 10.5 9.5Z" fill="currentColor"></path> <path d="M14.0037 4H9.9963C6.21809 4 4.32899 4 3.15525 5.17157C2.27661 6.04858 2.0557 7.32572 2.00016 9.49444C1.99304 9.77248 2.22121 9.99467 2.49076 10.0652C3.35074 10.2901 3.98521 11.0711 3.98521 12C3.98521 12.9289 3.35074 13.7099 2.49076 13.9348C2.22121 14.0053 1.99304 14.2275 2.00016 14.5056C2.0557 16.6743 2.27661 17.9514 3.15525 18.8284M18 4.10041C19.3086 4.22774 20.1885 4.51654 20.8448 5.17157C21.7234 6.04858 21.9443 7.32572 21.9998 9.49444C22.007 9.77248 21.7788 9.99467 21.5092 10.0652C20.6493 10.2901 20.0148 11.0711 20.0148 12C20.0148 12.9289 20.6493 13.7099 21.5092 13.9348C21.7788 14.0053 22.007 14.2275 21.9998 14.5056C21.9443 16.6743 21.7234 17.9514 20.8448 18.8284C19.671 20 17.7819 20 14.0037 20H9.9963C8.82865 20 7.84143 20 7 19.9654" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+        Create a coupon
+    </h1>
+	<div class="flex flex-col items-center mt-4 gap-4">
+        <div class="card w-full bg-base-300 shadow-sm">
+            <div class="card-body gap-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-2 p-1 text-base">
+                        <div>Ready to showcase your product? Whether you're launching something new or expanding your catalog, this is where it starts.</div>
+                        <div class="text-warning">To ensure a smooth and accurate listing, include as much detail as possible</div>
+                        <div class="px-5">
+                            <ul>
+                                <li class="list-disc">The product must have a clear and specific name that accurately represents the item.</li>
+                                <li class="list-disc">The product category and type must reflect the nature of the product and its intended use.</li>
+                                <li class="list-disc">The product should not be a duplicate of an existing product in your store. Instead of creating a new entry, update the stock of the existing product.</li>
+                                <li class="list-disc">The product title or description should not contain any offensive, copyrighted or misleading content.</li>
+                                <li class="list-disc">The product should not be a service or a digital product, as we only accept physical products for listing.</li>
+                                <li class="list-disc">The product price does not include shipping costs and platform fees, which will be calculated at checkout.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <form class="" method="POST">
+                        {% csrf_token %}
+                        {{ form |crispy }}
+                        <button type"submit" class="btn btn-primary w-full mt-2">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+{% endblock content %}

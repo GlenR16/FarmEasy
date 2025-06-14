@@ -1,0 +1,70 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "Load Seed Data",
+            "type": "shell",
+            "command": "./venv/Scripts/activate; python ./manage.py loaddata ./seed.json",
+            "presentation": {
+                "reveal": "never",
+                "revealProblems": "onProblem",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$python"
+            ]
+        },
+        {
+            "label": "Make migrations",
+            "type": "shell",
+            "command": "./venv/Scripts/activate; python ./manage.py makemigrations",
+            "presentation": {
+                "reveal": "never",
+                "revealProblems": "onProblem",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$python"
+            ]
+        },
+        {
+            "label": "Migrate",
+            "type": "shell",
+            "command": "./venv/Scripts/activate; python ./manage.py migrate",
+            "presentation": {
+                "reveal": "never",
+                "revealProblems": "onProblem",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$python"
+            ]
+        },
+        {
+            "label": "Run tailwind",
+            "type": "shell",
+            "command": "./venv/Scripts/activate; python ./manage.py tailwind start",
+            "presentation": {
+                "reveal": "never",
+                "revealProblems": "onProblem",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$python"
+            ]
+        },
+        {
+            "label": "Run backend",
+            "type": "shell",
+            "command": "./venv/Scripts/activate; python ./manage.py runserver",
+            "presentation": {
+                "reveal": "never",
+                "revealProblems": "onProblem",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$python"
+            ]
+        }
+    ]
+}

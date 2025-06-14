@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="p-5 w-full">
+	<h1 class="text-3xl font-bold text-center">Update review</h1>
+	<div class="flex flex-col mt-5 gap-4">
+        <div class="card w-full bg-base-300 card-lg shadow-sm">
+            <div class="card-body gap-0">
+                {% crispy form %}
+            </div>
+        </div>
+	</div>
+</div>
+{% endblock content %}

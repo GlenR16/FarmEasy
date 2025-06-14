@@ -1,0 +1,11 @@
+{% if form_show_errors and field.errors %} 
+    {% if field.errors.field_id %}
+        <div id="{{field.errors.field_id}}_error" class="text-error text-sm px-1 mt-1">
+	{% else %}
+	    <div id="{{field.auto_id}}_error" class="text-error text-sm px-1 mt-1">
+    {% endif %} 
+    {% for error in field.errors %}
+		<p id="error_{{ forloop.counter }}_{{ field.auto_id }}">{{ error }}</p>
+	{% endfor %}
+	</div>
+{% endif %}

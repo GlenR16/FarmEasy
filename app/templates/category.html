@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-5 w-full">
+    <h1 class="text-3xl font-bold text-center">Category</h1>
+    <div class="flex flex-col mt-5 gap-4">
+        {% for product in products %}
+            <c-product :product="product"></c-product>
+        {% empty %}
+            <div class="flex flex-col items-center justify-center w-full gap-4">
+                <div class="text-lg">No products found in this category.</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

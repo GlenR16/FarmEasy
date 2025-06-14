@@ -1,0 +1,35 @@
+{% extends "moderator/moderator.html" %} {% block subcontent %}
+<div class="flex flex-col gap-2">
+	<div class="flex flex-row items-center justify-between w-full">
+		<span class="text-2xl font-bold"> Pending Farmer Verifications </span>
+	</div>
+	<div class="flex flex-col gap-2">
+		{% for verification in object_list %}
+		<div class="card bg-base-300 shadow-sm">
+			<div class="card-body">
+				<h2 class="card-title text-3xl">{{ verification.user.name }}</h2>
+				<div class="flex flex-col gap-1">
+					<span class="text-lg"> {{ verification.user.email }} </span>
+					<span class="text-lg"> {{ verification.document_type }} - <a class="link" href="{{ verification.document.url }}" target="_blank">View Document</a> </span>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+					<form class="col-span-1" method="POST" action="{% url 'moderator_farmer_verification_status_update' verification.id %}">
+						{% csrf_token %}
+						<input type="hidden" name="status" value="Approved" />
+						<button type="submit" class="btn btn-success w-full">Approve</button>
+					</form>
+					<form class="col-span-1" method="POST" action="{% url 'moderator_farmer_verification_status_update' verification.id %}">
+						{% csrf_token %}
+						<input type="hidden" name="status" value="Rejected" />
+						<button type="submit" class="btn btn-error w-full">Reject</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		{% empty %}
+		<div class="text-lg">No verifications pending.</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock subcontent %}

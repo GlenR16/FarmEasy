@@ -1,0 +1,142 @@
+[
+    {
+        "model": "app.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$1000000$A6q1lTs92YSs7N8P94RJmb$MHjs0fcCazBxga6mhpCa9qD+klR21563kkmuF7XtS9I=",
+            "last_login": "2025-05-24T05:06:01.101Z",
+            "is_superuser": true,
+            "email": "glen@gmail.com",
+            "name": "Glen Rodrigues",
+            "is_farmer": false,
+            "is_moderator": false,
+            "is_staff": true,
+            "is_active": true,
+            "created_at": "2025-05-24T05:00:40.632Z",
+            "updated_at": "2025-05-24T05:00:40.632Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 1,
+        "fields": {
+            "name": "Dairy",
+            "description": "dairy",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:06:29.458Z",
+            "updated_at": "2025-05-24T05:06:29.458Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 2,
+        "fields": {
+            "name": "Bakery",
+            "description": "bakery",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:06:42.854Z",
+            "updated_at": "2025-05-24T05:06:42.854Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 3,
+        "fields": {
+            "name": "Nuts",
+            "description": "nuts",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:06:50.425Z",
+            "updated_at": "2025-05-24T05:06:50.425Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 4,
+        "fields": {
+            "name": "Meat & Fish",
+            "description": "meatandfish",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:07:11.372Z",
+            "updated_at": "2025-05-24T05:07:11.372Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 5,
+        "fields": {
+            "name": "Fruits",
+            "description": "Fruits",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:12:03.130Z",
+            "updated_at": "2025-05-24T05:12:03.130Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 6,
+        "fields": {
+            "name": "Vegetables",
+            "description": "vegetables",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:12:13.368Z",
+            "updated_at": "2025-05-24T05:12:13.368Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 7,
+        "fields": {
+            "name": "Dals & Pulses",
+            "description": "dalsandpulses",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:12:47.251Z",
+            "updated_at": "2025-05-24T05:12:47.251Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 8,
+        "fields": {
+            "name": "Frozen Foods",
+            "description": "frozenfoods",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:13:14.512Z",
+            "updated_at": "2025-05-24T05:13:14.512Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 9,
+        "fields": {
+            "name": "Oil & Ghee",
+            "description": "oilandghee",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:13:27.301Z",
+            "updated_at": "2025-05-24T05:13:27.301Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 10,
+        "fields": {
+            "name": "Spices",
+            "description": "spices",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:13:48.737Z",
+            "updated_at": "2025-05-24T05:13:48.737Z"
+        }
+    },
+    {
+        "model": "app.productcategory",
+        "pk": 11,
+        "fields": {
+            "name": "Chocolates & Icecreams",
+            "description": "chocoandice",
+            "status": "Approved",
+            "created_at": "2025-05-24T05:15:58.088Z",
+            "updated_at": "2025-05-24T05:15:58.088Z"
+        }
+    }
+]

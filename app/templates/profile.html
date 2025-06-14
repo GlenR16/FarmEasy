@@ -1,0 +1,136 @@
+{% extends "base.html" %} {% load static %} {% load mathfilters %} {% load crispy_forms_tags %} {% block content %}
+<div class="p-4 w-full">
+	<h1 class="text-3xl font-bold inline-flex items-center justify-center gap-2 w-full">
+        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.5"></circle> <path d="M17.9691 20C17.81 17.1085 16.9247 15 11.9999 15C7.07521 15 6.18991 17.1085 6.03076 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+        User Profile
+    </h1>
+	<div class="flex flex-col md:flex-row mt-4 gap-4">
+		<div class="flex flex-col gap-4 w-full">
+			<div class="card w-full bg-base-300 shadow-sm">
+				<div class="card-body gap-0">
+					<h2 class="card-title text-2xl md:text-4xl inline-flex items-end justify-center">
+						{{ user.name }} {% if user.is_moderator %}
+						<svg class="h-7 w-7 text-primary mb-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+							<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+							<g id="SVGRepo_iconCarrier"><path d="M9 11.4999L11 13.4999L15.5 8.99987M20 11.9999C20 16.9083 14.646 20.4783 12.698 21.6147C12.4766 21.7439 12.3659 21.8085 12.2097 21.842C12.0884 21.868 11.9116 21.868 11.7903 21.842C11.6341 21.8085 11.5234 21.7439 11.302 21.6147C9.35396 20.4783 4 16.9083 4 11.9999V7.21747C4 6.41796 4 6.0182 4.13076 5.67457C4.24627 5.37101 4.43398 5.10015 4.67766 4.8854C4.9535 4.64231 5.3278 4.50195 6.0764 4.22122L11.4382 2.21054C11.6461 2.13258 11.75 2.0936 11.857 2.07815C11.9518 2.06444 12.0482 2.06444 12.143 2.07815C12.25 2.0936 12.3539 2.13258 12.5618 2.21054L17.9236 4.22122C18.6722 4.50195 19.0465 4.64231 19.3223 4.8854C19.566 5.10015 19.7537 5.37101 19.8692 5.67457C20 6.0182 20 6.41796 20 7.21747V11.9999Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g>
+						</svg>
+						{% endif %} {% if user.is_farmer %}
+						<svg class="h-7 w-7 text-secondary mb-1" version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" fill="currentColor">
+							<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+							<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+							<g id="SVGRepo_iconCarrier">
+								<style type="text/css">
+									.st0 {
+										fill: none;
+										stroke: currentColor;
+										stroke-width: 2;
+										stroke-linecap: round;
+										stroke-linejoin: round;
+										stroke-miterlimit: 10;
+									}
+								</style>
+								<path class="st0" d="M3,25l2.6-4.2c1.5-2.3,4-3.8,6.8-3.8H19v0c0,2.2-1.8,4-4,4h-2"></path>
+								<path class="st0" d="M16,21h7l1.2-1.6c1.1-1.5,2.9-2.4,4.8-2.4h0l-2.7,4.8c-1.4,2.6-4.2,4.2-7.1,4.2h0c-4.7,0-9.3,1.4-13.2,4l0,0"></path>
+								<path class="st0" d="M18,10L18,10L18,10c0-3.9,3.1-7,7-7h0v0C25,6.9,21.9,10,18,10z"></path>
+								<path class="st0" d="M18,13L18,13c-3.9,0-7-3.1-7-7v0h0C14.9,6,18,9.1,18,13L18,13z"></path>
+								<line class="st0" x1="18" y1="2" x2="18" y2="17"></line>
+							</g>
+						</svg>
+						{% endif %}
+					</h2>
+					<div class="flex flex-col items-center gap-2 mt-2">
+						<span class="text-sm md:text-lg font-semibold">+91 12345 67890 - {{ user.email }} </span>
+						{% if not user.is_farmer %}
+						<a href="{% url 'farmer_verification' %}" class="btn btn-primary w-full">Convert to Farmer Account</a>
+						{% endif %}
+						<div class="stats stats-vertical sm:stats-horizontal bg-base-100 shadow w-full mt-2">
+							<div class="stat">
+								<div class="stat-figure text-secondary">
+									<svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21 6V3.50519C21 2.92196 20.3109 2.61251 19.875 2.99999C19.2334 3.57029 18.2666 3.57029 17.625 2.99999C16.9834 2.42969 16.0166 2.42969 15.375 2.99999C14.7334 3.57029 13.7666 3.57029 13.125 2.99999C12.4834 2.42969 11.5166 2.42969 10.875 2.99999C10.2334 3.57029 9.26659 3.57029 8.625 2.99999C7.98341 2.42969 7.01659 2.42969 6.375 2.99999C5.73341 3.57029 4.76659 3.57029 4.125 2.99999C3.68909 2.61251 3 2.92196 3 3.50519V14M21 10V20.495C21 21.0782 20.3109 21.3876 19.875 21.0002C19.2334 20.4299 18.2666 20.4299 17.625 21.0002C16.9834 21.5705 16.0166 21.5705 15.375 21.0002C14.7334 20.4299 13.7666 20.4299 13.125 21.0002C12.4834 21.5705 11.5166 21.5705 10.875 21.0002C10.2334 20.4299 9.26659 20.4299 8.625 21.0002C7.98341 21.5705 7.01659 21.5705 6.375 21.0002C5.73341 20.4299 4.76659 20.4299 4.125 21.0002C3.68909 21.3876 3 21.0782 3 20.495V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7.5 15.5H11.5M16.5 15.5H14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M16.5 12H12.5M7.5 12H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7.5 8.5H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+									
+								</div>
+								<div class="stat-title font-semibold text-base">Orders Placed</div>
+								<div class="stat-value">
+                                    {{ user.orders.count|sub:1 }}
+                                </div>
+								<div class="stat-desc">
+                                    {{ user.created_at|date:"F j, Y" }} - Present
+                                </div>
+							</div>
+
+							<div class="stat">
+								<div class="stat-figure text-secondary">
+									<svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="3" cy="3" r="3" transform="matrix(-1 0 0 1 22 2)" stroke="currentColor" stroke-width="1.5"></circle> <path d="M14 2.20004C13.3538 2.06886 12.6849 2 12 2C10.1786 2 8.47087 2.48697 7 3.33782M21.8 10C21.9311 10.6462 22 11.3151 22 12C22 17.5228 17.5228 22 12 22C10.4003 22 8.88837 21.6244 7.54753 20.9565C7.19121 20.7791 6.78393 20.72 6.39939 20.8229L4.17335 21.4185C3.20701 21.677 2.32295 20.793 2.58151 19.8267L3.17712 17.6006C3.28001 17.2161 3.22094 16.8088 3.04346 16.4525C2.37562 15.1116 2 13.5997 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+								</div>
+								<div class="stat-title font-semibold text-base">Products Reviewed</div>
+								<div class="stat-value">
+                                    {{ user.reviews.count}}
+                                </div>
+								<div class="stat-desc">
+                                    {% if user.reviews.count == 0%}
+                                        Everyone starts somewhere! 
+                                    {% else %}
+                                        Keep sharing your thoughts!
+                                    {% endif %}
+                                </div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card w-full bg-base-300 shadow-sm">
+				<div class="card-body gap-4">
+					<h2 class="card-title text-3xl items-center justify-center gap-2">
+                        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.5 7.04148C12.3374 7.0142 12.1704 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13C13.6569 13 15 11.6569 15 10C15 9.82964 14.9858 9.6626 14.9585 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M5 15.2161C4.35254 13.5622 4 11.8013 4 10.1433C4 5.64588 7.58172 2 12 2C16.4183 2 20 5.64588 20 10.1433C20 14.6055 17.4467 19.8124 13.4629 21.6744C12.5343 22.1085 11.4657 22.1085 10.5371 21.6744C9.26474 21.0797 8.13831 20.1439 7.19438 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+                        Addresses
+                    </h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{% for address in user.addresses.all %}
+						<div class="card bg-base-100 shadow-sm min-h-48">
+							<div class="card-body p-4 gap-0">
+								<h2 class="card-title">{{ address.name }}</h2>
+								<div class="divider m-0"></div>
+								<div class="flex flex-col justify-between h-full">
+									<div>{{ address.line1 }}{% if address.line2 %}, {{ address.line2 }}{% endif %}, {{ address.city }} {{ address.pin }}, {% if address.landmark %}{{ address.landmark }}, {% endif %}{{ address.state }}, {{ address.country }}</div>
+									<div class="justify-end card-actions mt-4">
+										<a href="{% url 'update_address' address.id %}" class="link">Edit</a>
+										<a href="{% url 'delete_address' address.id %}" class="link">Delete</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+						<a href="{% url 'create_address' %}" class="card bg-base-100 shadow-sm border-2 border-primary border-dashed min-h-48">
+							<div class="card-body p-4 gap-0 items-center justify-center">
+								<svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+									<g id="SVGRepo_iconCarrier"><path d="M6 12H18M12 6V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></g>
+								</svg>
+								<h2 class="card-title">Add new address</h2>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="flex flex-col gap-4 w-full">
+			<div class="card w-full bg-base-300 shadow-sm">
+				<div class="card-body">
+					<h2 class="card-title text-2xl justify-center">
+                        <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11.5 16H12.5C13.0523 16 13.5 15.5523 13.5 15V13.5987C14.3967 13.0799 15 12.1104 15 11C15 9.34315 13.6569 8 12 8C10.3431 8 9 9.34315 9 11C9 12.1104 9.6033 13.0799 10.5 13.5987V15C10.5 15.5523 10.9477 16 11.5 16Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path> <path d="M3 10.4167C3 7.21907 3 5.62028 3.37752 5.08241C3.75503 4.54454 5.25832 4.02996 8.26491 3.00079L8.83772 2.80472C10.405 2.26824 11.1886 2 12 2C12.8114 2 13.595 2.26824 15.1623 2.80472L15.7351 3.00079C18.7417 4.02996 20.245 4.54454 20.6225 5.08241C21 5.62028 21 7.21907 21 10.4167C21 10.8996 21 11.4234 21 11.9914C21 14.4963 20.1632 16.4284 19 17.9041M3.19284 14C4.05026 18.2984 7.57641 20.5129 9.89856 21.5273C10.62 21.8424 10.9807 22 12 22C13.0193 22 13.38 21.8424 14.1014 21.5273C14.6796 21.2747 15.3324 20.9478 16 20.5328" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+                        Update password
+                    </h2>
+					<form method="POST">
+						{% csrf_token %} {{ form |crispy }}
+						<div class="mt-4">
+							<button type="submit" class="btn btn-primary w-full">Change Password</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% load static %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="p-4 w-full">
+	<h1 class="text-3xl font-bold inline-flex items-center justify-center gap-2 w-full">Add an image for your product</h1>
+	<div class="flex flex-col items-center mt-5 gap-4">
+        <div class="card w-full bg-base-300 shadow-sm">
+            <div class="card-body gap-0">
+                <form method="GET" class="mb-2">
+                    <fieldset class="fieldset">
+                        <legend class="fieldset-legend text-sm font-semibold">Image count for product</legend>
+                        <select class="select w-full" name="extra" onchange="this.form.submit()">
+                            <option value="1" {% if request.GET.extra == '1' %}selected{% endif %}>1</option>
+                            <option value="2" {% if request.GET.extra == '2' %}selected{% endif %}>2</option>
+                            <option value="3" {% if request.GET.extra == '3' %}selected{% endif %}>3</option>
+                            <option value="4" {% if request.GET.extra == '4' %}selected{% endif %}>4</option>
+                            <option value="5" {% if request.GET.extra == '5' %}selected{% endif %}>5</option>
+                            <option value="6" {% if request.GET.extra == '6' %}selected{% endif %}>6</option>
+                        </select>
+                    </fieldset>
+                </form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1 text-sm">
+                        <div>High-quality images help customers understand and trust your product. Use the form here to upload clear, accurate photos that showcase your item. Please review the image guidelines to avoid issues or delays in publishing your listing.</div>
+                        <div class="text-warning">Please follow the image guidelines below to ensure your product listings look professional and comply with our marketplace standards</div>
+                        <div>
+                           <div class="text-base font-semibold">Image Requirements</div>
+                            <ul class="px-5">
+                                <li class="list-disc"><strong>File Types Allowed:</strong> JPG, JPEG, PNG, or WEBP</li>
+                                <li class="list-disc"><strong>Maximum File Size:</strong> 5MB per image</li>
+                                <li class="list-disc"><strong>Image Dimensions:</strong> Minimum 800x800 pixels (square preferred)</li>
+                                <li class="list-disc"><strong>Number of Images:</strong> Up to 6 images per product</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="text-base font-semibold">Image Quality Guidelines</div>
+                            <ul class="px-5">
+                                <li class="list-disc"><strong>Background:</strong> Use a clean, solid white or light-colored background</li>
+                                <li class="list-disc"><strong>Clarity:</strong> Ensure images are sharp and well-lit</li>
+                                <li class="list-disc"><strong>Framing:</strong> Center the product in the frame with minimal cropping</li>
+                                <li class="list-disc"><strong>No Watermarks or Logos:</strong> Avoid adding text, brand logos, or promotional overlays</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="text-base font-semibold">What to Avoid</div>
+                            <ul class="px-5">
+                                <li class="list-disc">No inappropriate, offensive, or misleading imagery</li>
+                                <li class="list-disc">Avoid including people in the image</li>
+                                <li class="list-disc">No borders, graphical elements, or emoji must be present in the images</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="text-base font-semibold">Legal &amp; Ownership</div>
+                            <ul class="px-5">
+                                <li class="list-disc">Ensure that you own the rights to the images or have permission to use them</li>
+                                <li class="list-disc">The images must accurately represent the product being sold</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <form class="flex flex-col gap-2" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %} {{form |crispy}}
+                        <button type="submit" class="btn btn-primary w-full">Add Images</button>
+                        <div class="text-base">Listings with poor-quality or non-compliant images may be removed or hidden.</div>
+                    </form>
+			    </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}

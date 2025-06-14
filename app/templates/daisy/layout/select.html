@@ -1,0 +1,10 @@
+{% load crispy_forms_filters %}
+<select class="select w-full {% if field.errors %}select-error {% endif %}" name="{{ field.html_name }}">
+    {% for group, options, index in field|optgroups %}
+        {% if group %}<optgroup label="{{ group }}">{% endif %}
+        {% for option in options %}
+            {% include "daisy/layout/select_option.html" %}
+        {% endfor %}
+        {% if group %}</optgroup>{% endif %}
+    {% endfor %}
+</select>
