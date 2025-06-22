@@ -1,6 +1,7 @@
 from email.policy import default
 from django import forms
 import django_filters
+import django_filters.widgets
 
 from app.models import Coupon, FarmerVerification, Product, Order, ProductCategory
 
@@ -25,10 +26,11 @@ class OrderFilter(django_filters.FilterSet):
     """
     Filter for searching orders by status and placed_at date range.
     """
-    placed_at = django_filters.DateFromToRangeFilter()
+    placed_at = django_filters.DateRangeFilter()
 
     class Meta:
         model = Order
         fields = ['status', 'placed_at']
+
 
         

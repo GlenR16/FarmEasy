@@ -26,5 +26,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
-    
+
+    def get(self, *args, **kwargs):
+        return super().prefetch_related('notifications','orders','orders__line_items','orders__line_items__product').get(*args, **kwargs)
         

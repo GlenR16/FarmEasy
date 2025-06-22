@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load global_extras %}
 {% block content %}
-<div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
+<div class="p-4 grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
     <div class="flex flex-col gap-4 col-span-1">
         <h1 class="text-2xl font-semibold">
             Search filters
@@ -19,7 +19,7 @@
 			</button>
         </form>
     </div>
-    <div class="flex flex-col gap-2 col-span-1 md:col-span-3">
+    <div class="flex flex-col gap-2 col-span-1 md:col-span-3 overflow-y-auto md:h-[calc(100vh-8rem)] md:pe-2">
         <h1 class="text-2xl font-semibold">
             Search results for {{ request.GET.q }}
         </h1>

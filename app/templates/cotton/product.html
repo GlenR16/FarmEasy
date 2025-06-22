@@ -11,16 +11,18 @@
                 <div class="badge badge-secondary">{{ product.type }}</div>
             </div>
             <div class="flex flex-row gap-2 items-center">
+                {% with rating=product.rating %}
                 <div class="text-sm">
-                    {{ product.rating | floatformat:1 }}
+                    {{ rating | floatformat:1 }}
                 </div>
                 <div class="rating rating-xs gap-1">
-                    <div class="mask mask-star" aria-label="1 star" {% if product.rating|get_digit:"1" == 1 %}aria-current="true"{% endif %} ></div>
-                    <div class="mask mask-star" aria-label="2 star" {% if product.rating|get_digit:"1" == 2 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="3 star" {% if product.rating|get_digit:"1" == 3 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="4 star" {% if product.rating|get_digit:"1" == 4 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="5 star" {% if product.rating|get_digit:"1" == 5 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="1 star" {% if rating|get_digit:"1" == 1 %}aria-current="true"{% endif %} ></div>
+                    <div class="mask mask-star" aria-label="2 star" {% if rating|get_digit:"1" == 2 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="3 star" {% if rating|get_digit:"1" == 3 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="4 star" {% if rating|get_digit:"1" == 4 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="5 star" {% if rating|get_digit:"1" == 5 %}aria-current="true"{% endif %}></div>
                 </div>
+                {% endwith %}
                 <div class="text-sm">
                     ( {{ product.reviews.all.count }} reviews )
                 </div>
@@ -54,7 +56,8 @@
                             Edit
                         </a>
                     {% else %}
-                        {% if product in user.cart.products %}
+                        {% pick user.orders "status" "Cart" as cart %}
+                        {% if product in cart.products %}
                             <div class="join">
                                 <a href="{% url 'decrease_lineitem_quantity' product.id %}?next={{ request.path|urlencode }}" class="btn btn-primary join-item">
                                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

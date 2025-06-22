@@ -1,4 +1,3 @@
-import time
 from django.forms import formset_factory
 from django.urls import reverse
 from django.utils import timezone
@@ -10,14 +9,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import RedirectView
+from django.db.models.functions import TruncMonth
+from django.db.models import Count, Sum, F
 
+import plotly.express as px
 from app.filters import OrderFilter, ProductSearchFilter
 from app.models import Address, Coupon, FarmerVerification, Order, OrderPayment, Product, ProductImage, ProductReview, ProductCategory
 from app.forms import AddressForm, FarmerVerificationForm, OrderCheckoutCombinedForm, OrderConfirmForm, ProductForm, ProductImageForm, ProductReviewForm, UserCreationForm
 
 class IndexView(TemplateView):
     template_name = 'index.html'
-
+    
 class SignupView(UserPassesTestMixin,FormView):
     template_name = "auth/signup.html"
     form_class = UserCreationForm
@@ -61,7 +63,8 @@ class LogoutView(LoginRequiredMixin,RedirectView):
 class SearchView(FilterView):
     template_name = 'search.html'
     filterset_class = ProductSearchFilter
-    
+
+
 class ProfileView(LoginRequiredMixin,PasswordChangeView):
     template_name = 'profile.html'
     form_class = PasswordChangeForm
@@ -120,7 +123,7 @@ class OrderListView(LoginRequiredMixin, FilterView):
     filterset_class = OrderFilter
 
     def get_queryset(self):
-        return self.request.user.orders.exclude(status=Order.OrderStatus.CART).exclude(placed_at__gte=timezone.now()).order_by('-created_at')
+        return self.request.user.orders.exclude(status=Order.OrderStatus.CART).exclude(placed_at__gte=timezone.now()).prefetch_related('payments','line_items','line_items__product')
     
 class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
@@ -234,7 +237,7 @@ class AddToCartView(LoginRequiredMixin , RedirectView):
         product = queryset.get(pk=self.kwargs['pk'])
         if not product.in_stock():
             return super().get(request, *args, **kwargs)
-        order = self.request.user.cart()
+        order = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
         if not order:
             order = Order.objects.create(user=self.request.user, status=Order.OrderStatus.CART)
         order.line_items.create(product=product, quantity=1, price=product.price)
@@ -253,7 +256,7 @@ class RemoveFromCartView(LoginRequiredMixin , RedirectView):
         if not queryset.filter(pk=self.kwargs['pk']).exists():
             return super().get(request, *args, **kwargs)
         product = queryset.get(pk=self.kwargs['pk'])
-        order = self.request.user.cart()
+        order = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
         order.line_items.filter(product=product).delete()
         return super().get(request, *args, **kwargs)
     
@@ -270,8 +273,8 @@ class IncreaseLineItemQuantityView(LoginRequiredMixin , RedirectView):
         if not queryset.filter(pk=self.kwargs['pk']).exists():
             return super().get(request, *args, **kwargs)
         product = queryset.get(pk=self.kwargs['pk'])
-        order = self.request.user.cart()
-        lineitem = order.line_items.get(product=product)
+        cart = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
+        lineitem = cart.line_items.get(product=product)
         lineitem.increase_quantity()
         return super().get(request, *args, **kwargs)
     
@@ -288,8 +291,8 @@ class DecreaseLineItemQuantityView(LoginRequiredMixin , RedirectView):
         if not queryset.filter(pk=self.kwargs['pk']).exists():
             return super().get(request, *args, **kwargs)
         product = queryset.get(pk=self.kwargs['pk'])
-        order = self.request.user.cart()
-        lineitem = order.line_items.get(product=product)
+        cart = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
+        lineitem = cart.line_items.get(product=product)
         lineitem.decrease_quantity()
         return super().get(request, *args, **kwargs)
     
@@ -335,7 +338,8 @@ class CheckoutView(LoginRequiredMixin, UserPassesTestMixin, FormView):
         return kwargs
     
     def test_func(self):
-        return self.request.user.cart() and self.request.user.cart().line_items.exists() 
+        cart = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
+        return cart and cart.line_items.exists() 
     
     def form_valid(self, form):
         form.save()
@@ -352,7 +356,7 @@ class CheckoutConfirmationView(LoginRequiredMixin,UserPassesTestMixin, FormView)
         return kwargs
     
     def test_func(self):
-        cart = self.request.user.cart()
+        cart = self.request.user.orders.filter(status=Order.OrderStatus.CART).first()
         if cart and (OrderPayment.objects.filter(order=cart, status=OrderPayment.PaymentStatus.PENDING, payment_method=OrderPayment.PaymentMethod.CASH).exists() or OrderPayment.objects.filter(order=cart, status=OrderPayment.PaymentStatus.COMPLETED).exists()):
             return True
         return False
@@ -371,7 +375,7 @@ class CategoryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.filter(category__name=self.kwargs['category'], is_active=True)
+        context['products'] = Product.objects.filter(category__name=self.kwargs['category'], is_active=True).prefetch_related('images', 'reviews').select_related('seller')
         return context
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
@@ -534,4 +538,52 @@ class FarmerDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pending_deliveries'] = Order.objects.filter(status=Order.OrderStatus.PENDING, line_items__product__seller=self.request.user,placed_at__lte=timezone.now()).distinct()
+        context['completed_deliveries_chart'] = px.bar(
+            Order.objects
+                .filter(status=Order.OrderStatus.DELIVERED, line_items__product__seller=self.request.user, placed_at__lte=timezone.now())
+                .annotate(month=TruncMonth('placed_at'))
+                .values('month')
+                .annotate(total_count=Count('id')),
+            x='month',
+            y='total_count',
+            title='Completed Deliveries for each month',
+            labels={'month': 'Month', 'total_count': 'Total Deliveries'},
+            template='plotly_dark'
+        ).to_html()
+        context['total_sales_chart'] = px.line(
+            Order.objects
+                .filter(status=Order.OrderStatus.DELIVERED, line_items__product__seller=self.request.user, placed_at__lte=timezone.now())
+                .annotate(month=TruncMonth('placed_at'))
+                .values('month')
+                .annotate(total_sales=Sum('line_items__price')),
+            x='month',
+            y='total_sales',
+            title='Total Sales for each month',
+            labels={'month': 'Month', 'total_sales': 'Total Sales'},
+            symbol='total_sales',
+            template='plotly_dark'
+        ).to_html()
+        context['category_pie_chart'] = px.pie(
+            Product.objects
+                .filter(seller=self.request.user, is_active=True)
+                .values('category__name')
+                .annotate(total_count=Count('id')),
+            names='category__name',
+            values='total_count',
+            title='Product Categories Distribution',
+            labels={'category__name': 'Category', 'total_count': 'Total Products'},
+            template='plotly_dark'
+        ).to_html()
+        context['category_wise_sales_chart'] = px.pie(
+            Order.objects
+                .filter(status=Order.OrderStatus.DELIVERED, line_items__product__seller=self.request.user, placed_at__lte=timezone.now())
+                .annotate(category_name=F('line_items__product__category__name'))
+                .values('category_name')
+                .annotate(total_sales=Sum('line_items__price')),
+            names='category_name',
+            values='total_sales',
+            title='Category-wise Sales Distribution',
+            labels={'category_name': 'Category', 'total_sales': 'Total Sales'},
+            template='plotly_dark'
+        ).to_html()
         return context

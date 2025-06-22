@@ -1,11 +1,13 @@
-{% load global_extras %}
+{% load cache %}
 <div>
     <ul class="flex flex-row bg-primary bg-content-primary w-full overflow-x-auto no-scrollbar h-10 gap-2 items-center px-2">
         {% for category in categories %}
-            <a href="{% url 'category' category.name %}" class="btn btn-sm btn-soft btn-accent btn-{% is_url_active 'category' category.name %}">{{ category.name }}</a>
+            <a href="{% url 'category' category.name %}" class="btn btn-sm btn-soft btn-accent {% if request.path == category.get_absolute_url %}btn-active{% endif %}">
+                {{ category.name }}
+            </a>
         {% endfor %}
         {% if user.is_authenticated and user.is_farmer %}
-            <a href="{% url 'create_product_category' %}" class="btn btn-sm btn-soft btn-accent btn-{% is_url_active 'create_product_category' %}">
+            <a href="{% url 'create_product_category' %}" class="btn btn-sm btn-soft btn-accent {% if request.path == 'product/category' %}btn-active{% endif %}">
                 Propose New Category
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 12H18M12 6V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
             </a>

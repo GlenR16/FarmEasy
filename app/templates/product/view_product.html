@@ -3,22 +3,25 @@
 {% load global_extras %}
 {% block content %}
 <div class="w-full flex flex-col items-center gap-4">
+    {% with reviews=product.reviews.all %}
 	<div class="grid grid-cols-1 md:grid-cols-12 gap-4 px-4">
         {% if product.images.exists %}
-        <div class="col-span-1 md:col-span-4 flex flex-col-reverse md:flex-row gap-2 h-100">
-            <div class="flex flex-row md:flex-col gap-2 items-center justify-center">
-                {% for image in product.images.all %}
-                    <a href="#item-image-{{ image.id }}" class="btn btn-xs">{{ forloop.counter }}</a>
-                {% endfor %}
-            </div>
-            <div class="carousel carousel-center" >
-                {% for image in product.images.all %}
-                <div id="item-image-{{ image.id }}" class="carousel-item flex items-center justify-center w-full py-4">
-                    <img src="{{ image.image.url }}" class="h-full rounded-lg" />
+            {% with images=product.images.all %}
+                <div class="col-span-1 md:col-span-4 flex flex-col-reverse md:flex-row gap-2 h-100">
+                    <div class="flex flex-row md:flex-col gap-2 items-center justify-center">
+                        {% for image in images %}
+                            <a href="#item-image-{{ image.id }}" class="btn btn-xs">{{ forloop.counter }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="carousel carousel-center" >
+                        {% for image in images %}
+                        <div id="item-image-{{ image.id }}" class="carousel-item flex items-center justify-center w-full py-4">
+                            <img src="{{ image.image.url }}" class="h-full rounded-lg" />
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
+            {% endwith %}
         {% else %}
         <div class="col-span-1 md:col-span-4 flex flex-col items-center justify-center gap-4 w-full rounded-lg bg-neutral text-neutral-content my-4 min-h-50">
             <svg class="h-20 w-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 12.5001L3.75159 10.9675C4.66286 10.1702 6.03628 10.2159 6.89249 11.0721L11.1822 15.3618C11.8694 16.0491 12.9512 16.1428 13.7464 15.5839L14.0446 15.3744C15.1888 14.5702 16.7369 14.6634 17.7765 15.599L21 18.5001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M22 2.00002L16 8M16 2L21.9999 7.99998" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 10.8717 2 9.87835 2.02008 9M12 2C7.28595 2 4.92893 2 3.46447 3.46447C3.03965 3.88929 2.73806 4.38921 2.52396 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
@@ -34,19 +37,21 @@
             </div>
             <a href="{% url 'store' product.seller.id %}" class="link"> Visit the seller's store @ {{ product.seller.name }} </a>
             <div class="flex flex-row gap-2 items-center">
+                {% with rating=product.rating %}
                 <div class="text-sm">
-                    {{ product.rating | floatformat:1 }}
+                    {{ rating | floatformat:1 }}
                 </div>
                 <div class="rating rating-xs">
-                    <div class="mask mask-star" aria-label="1 star" {% if product.rating|get_digit:"1" == 1 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="2 star" {% if product.rating|get_digit:"1" == 2 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="3 star" {% if product.rating|get_digit:"1" == 3 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="4 star" {% if product.rating|get_digit:"1" == 4 %}aria-current="true"{% endif %}></div>
-                    <div class="mask mask-star" aria-label="5 star" {% if product.rating|get_digit:"1" == 5 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="1 star" {% if rating|get_digit:"1" == 1 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="2 star" {% if rating|get_digit:"1" == 2 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="3 star" {% if rating|get_digit:"1" == 3 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="4 star" {% if rating|get_digit:"1" == 4 %}aria-current="true"{% endif %}></div>
+                    <div class="mask mask-star" aria-label="5 star" {% if rating|get_digit:"1" == 5 %}aria-current="true"{% endif %}></div>
                 </div>
                 <div class="text-sm">
-                    ( {{ product.reviews.all.count }} reviews )
+                    ( {{ reviews.count }} reviews )
                 </div>
+                {% endwith %}
             </div>
             <div>
                 <div class="text-2xl font-semibold">₹ {{ product.price|floatformat:2 }}</div>
@@ -106,35 +111,36 @@
                 Review Statistics
             </h1>
             <div class="flex flex-col gap-3 p-2">
+                {% with rating_distribution=product.rating_distribution %}
                 <div class="flex flex-row gap-2 h-4 items-center">
                     <div class="text-base w-16">
                         5 stars
                     </div>
-                    <progress class="progress progress-accent w-full h-full" value="{{ product.rating_distribution.5 }}" max="100"></progress>
+                    <progress class="progress progress-accent w-full h-full" value="{{ rating_distribution.5 }}" max="100"></progress>
                 </div>
                 <div class="flex flex-row gap-2 h-4 items-center">
                     <div class="text-base w-16">
                         4 stars
                     </div>
-                    <progress class="progress progress-accent w-full h-full" value="{{ product.rating_distribution.4 }}" max="100"></progress>
+                    <progress class="progress progress-accent w-full h-full" value="{{ rating_distribution.4 }}" max="100"></progress>
                 </div>
                 <div class="flex flex-row gap-2 h-4 items-center">
                     <div class="text-base w-16">
                         3 stars
                     </div>
-                    <progress class="progress progress-accent w-full h-full" value="{{ product.rating_distribution.3 }}" max="100"></progress>
+                    <progress class="progress progress-accent w-full h-full" value="{{ rating_distribution.3 }}" max="100"></progress>
                 </div>
                 <div class="flex flex-row gap-2 h-4 items-center">
                     <div class="text-base w-16">
                         2 stars
                     </div>
-                    <progress class="progress progress-accent w-full h-full" value="{{ product.rating_distribution.2 }}" max="100"></progress>
+                    <progress class="progress progress-accent w-full h-full" value="{{ rating_distribution.2 }}" max="100"></progress>
                 </div>
                 <div class="flex flex-row gap-2 h-4 items-center">
                     <div class="text-base w-16">
                         1 stars
                     </div>
-                    <progress class="progress progress-accent w-full h-full" value="{{ product.rating_distribution.1 }}" max="100"></progress>
+                    <progress class="progress progress-accent w-full h-full" value="{{ rating_distribution.1 }}" max="100"></progress>
                 </div>
                 <div class="flex flex-row gap-2 items-center text-sm">
                     How are ratings calculated ?
@@ -142,6 +148,7 @@
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 17V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <circle cx="1" cy="1" r="1" transform="matrix(1 0 0 -1 11 9)" fill="currentColor"></circle> <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
                     </div>
                 </div>
+                {% endwith %}
             </div>
         </div>
         <div class="flex flex-col gap-2 col-span-2">
@@ -175,7 +182,7 @@
             {% endif %}
 
             <div class="flex flex-col gap-2">
-                {% for review in product.reviews.all %}
+                {% for review in reviews %}
                     <div class="card bg-base-300 shadow-sm">
                         <div class="card-body p-4">
                             <div class="flex flex-row gap-2 items-center">
@@ -197,5 +204,6 @@
             </div>
         </div>
     </div>
+    {% endwith %}
 </div>
 {% endblock content %}

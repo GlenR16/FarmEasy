@@ -1,13 +1,12 @@
-import re
+from urllib.parse import unquote
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db.models import Sum
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid
-
-from requests import delete
 
 from app.managers import UserManager
 
@@ -40,17 +39,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["name"]
-
-    def cart(self):
-        return self.orders.filter(status=Order.OrderStatus.CART).order_by("-created_at").first()
     
     def reviewed_products(self):
         return Product.objects.filter(reviews__user=self)
     
+    def rating_distribution(self):
+        total = self.products.aggregate(total=models.Count('reviews'))['total'] or 0
+        if total == 0:
+            return {i: 0 for i in range(1, 6)}
+        distribution = self.products.values('reviews__rating').annotate(count=models.Count('reviews__rating')).values('reviews__rating', 'count')
+        return {item['reviews__rating']: int(item['count'] * 100 / total) for item in distribution}
+    
     def __str__(self):
         return self.name
-    
-
     
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
@@ -117,6 +118,9 @@ class ProductCategory(models.Model):
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated At"), auto_now=True)
 
+    def get_absolute_url(self):
+        return unquote(reverse("category", kwargs={"category": self.name}))
+    
     def __str__(self):
         return self.name
 
@@ -204,18 +208,12 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated At"), auto_now=True)
-
-    def products(self):
-        return Product.objects.filter(line_items__order=self)
     
     def platform_fee(self) -> float:
         return self.total_price() * 0.01
     
     def total_price(self) -> float:
         return float(sum([item.total_price() for item in self.line_items.all() ]))
-    
-    def payment(self):
-        return self.payments.last()
     
     def purchase(self):
         if self.status != Order.OrderStatus.CART:
@@ -280,6 +278,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order {self.reference}"
+    
+    class Meta:
+        ordering = ['-created_at']
 
 class LineItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="line_items")
@@ -384,6 +385,9 @@ class OrderPayment(models.Model):
 
     def total_amount(self):
         return self.order_amount + self.delivery_charge - self.discount_amount
+    
+    class Meta:
+        ordering = ['-created_at']
         
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
@@ -397,3 +401,5 @@ class ProductReview(models.Model):
 
     class Meta:
         unique_together = ('product', 'user',)
+        ordering = ['-created_at']
+    

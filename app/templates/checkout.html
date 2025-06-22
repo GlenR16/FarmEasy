@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load mathfilters %}
+{% load global_extras %}
 {% block content %}
 <div class="p-4 w-full">
 	<h1 class="text-3xl font-bold inline-flex items-center justify-center gap-2 w-full">
@@ -29,25 +30,28 @@
 									</tr>
 								</thead>
 								<tbody>
-                                    {% for item in user.cart.line_items.all %}
-                                    <tr>
-										<th> {{ forloop.counter }} </th>
-										<td>{{ item.product.name }}</td>
-										<td>₹ {{ item.product.price|floatformat:2 }}</td>
-										<td>{{ item.quantity }}</td>
-                                        <td>₹ {{ item.product.price|mul:item.quantity }}</td>
-									</tr>
-                                    {% endfor %}
-                                    <tr class="bg-base-200 font-bold">
-                                        <th></th>
-                                        <td>Total</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            ₹ {{ user.cart.total_price|floatformat:2 }}
-                                        </td>
-                                        <td></td>
-                                    </tr>
+                                    {% pick user.orders "status" "Cart" as cart %} 
+                                    {% with line_items=cart.line_items.all %}
+                                        {% for item in line_items %}
+                                        <tr>
+                                            <th> {{ forloop.counter }} </th>
+                                            <td>{{ item.product.name }}</td>
+                                            <td>₹ {{ item.product.price|floatformat:2 }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>₹ {{ item.product.price|mul:item.quantity }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr class="bg-base-200 font-bold">
+                                            <th></th>
+                                            <td>Total</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                                ₹ {{ cart.total_price|floatformat:2 }}
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    {% endwith %}
 								</tbody>
 							</table>
 						</div>

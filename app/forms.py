@@ -156,7 +156,7 @@ class OrderCheckoutCombinedForm(forms.Form):
             return is_valid
         if status == OrderPayment.PaymentStatus.FAILED or (status == OrderPayment.PaymentStatus.PENDING and payment_method != OrderPayment.PaymentMethod.CASH):
             self.add_error('status', "Payment failed. Please try again.")
-            order = self.user.cart()
+            order = self.user.orders.filter(status=Order.OrderStatus.CART).first()
             order_payment = OrderPayment(
                 order=order,
                 status=status,
@@ -169,7 +169,7 @@ class OrderCheckoutCombinedForm(forms.Form):
 
     def save(self):
         """Custom save method to create both Order and OrderPayment"""
-        order = self.user.cart()
+        order = self.user.orders.filter(status=Order.OrderStatus.CART).first()
         address = self.cleaned_data['address']
         order.recipient_name = address.name
         order.delivery_address = address.full_address()
@@ -203,7 +203,7 @@ class OrderConfirmForm(forms.Form):
 
     def save(self):
         """Custom save method to confirm the order"""
-        order = self.user.cart()
+        order = self.user.orders.filter(status=Order.OrderStatus.CART).first()
         if self.cleaned_data['status'] == 'No':
             if order.payments.exists():
                 order_payment = order.payments.last()

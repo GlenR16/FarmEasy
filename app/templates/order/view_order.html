@@ -2,6 +2,7 @@
 {% load static %}
 {% load mathfilters %}
 {% load crispy_forms_tags %}
+{% load global_extras %}
 {% block content %}
 <div class="p-5 w-full">
     <h1 class="text-3xl font-bold text-center">Order Details</h1>
@@ -23,7 +24,8 @@
                             {% endif %}
 							<div class="flex flex-col items-start">
 								<div>Total</div>
-								<div class="font-semibold">₹ {{ order.payment.total_amount|floatformat:2 }}</div>
+								{% pick order.payments "status" "Completed" as last_payment %}
+								<div class="font-semibold">₹ {{ last_payment.total_amount|floatformat:2 }}</div>
 							</div>
 							<div class="flex flex-col items-start">
 								<div>Ship To</div>
@@ -94,7 +96,7 @@
                                         <td></td>
                                         <td>
                                             <div class="inline-flex items-center gap-2">
-                                                ₹ {{ order.payment.order_amount|floatformat:2 }}
+                                                ₹ {{ last_payment.order_amount|floatformat:2 }}
                                             </div>
                                         </td>
                                         <td></td>
@@ -106,15 +108,15 @@
                                         <td></td>
                                         <td>
                                             <div class="inline-flex items-center gap-2">
-                                                ₹ {{ order.payment.delivery_charge|floatformat:2 }}
-                                                {% if order.payment.rain_surcharge %}
+                                                ₹ {{ last_payment.delivery_charge|floatformat:2 }}
+                                                {% if last_payment.rain_surcharge %}
                                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M22 13.3529C22 15.2939 21.0091 17.0061 19.5 18.0226M14.381 8.02721C14.9767 7.81911 15.6178 7.70588 16.2857 7.70588C16.9404 7.70588 17.5693 7.81468 18.1551 8.01498M7.11616 10.6089C6.8475 10.5567 6.56983 10.5294 6.28571 10.5294C3.91878 10.5294 2 12.4256 2 14.7647C2 16.0746 2.60178 17.2457 3.54704 18.0226M7.11616 10.6089C6.88706 9.9978 6.7619 9.33687 6.7619 8.64706C6.7619 5.52827 9.32028 3 12.4762 3C15.4159 3 17.8371 5.19371 18.1551 8.01498M7.11616 10.6089C7.68059 10.7184 8.20528 10.9374 8.66667 11.2426M18.1551 8.01498C18.8381 8.24853 19.4623 8.60648 20 9.06141" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M17 19L15 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M16 15.5L14 17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M12 20L10 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M11.5 15.5L9.5 17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7.5 19L5.5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
                                                 {% endif %}
                                             </div>
                                         </td>
                                         <td></td>
                                     </tr>
-                                    {% if order.payment.discount_amount > 0 %}
+                                    {% if last_payment.discount_amount > 0 %}
                                     <tr>
                                         <th></th>
                                         <td>Discount</td>
@@ -122,7 +124,7 @@
                                         <td></td>
                                         <td>
                                             <div class="inline-flex items-center gap-2">
-                                                ₹ {{ order.payment.discount_amount|floatformat:2 }}
+                                                ₹ {{ last_payment.discount_amount|floatformat:2 }}
                                             </div>
                                         </td>
                                         <td></td>
@@ -134,7 +136,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>
-                                            ₹ {{ order.payment.total_amount|floatformat:2 }}
+                                            ₹ {{ last_payment.total_amount|floatformat:2 }}
                                         </td>
                                         <td></td>
                                     </tr>
@@ -155,10 +157,10 @@
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15 21H9C6.17157 21 4.75736 21 3.87868 20.1213C3 19.2426 3 17.8284 3 15M21 15C21 17.8284 21 19.2426 20.1213 20.1213C19.8215 20.4211 19.4594 20.6186 19 20.7487" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                                 </div>
                             </a>
-                            {% if order.payment.coupon %}
+                            {% if last_payment.coupon %}
                             <div class="flex flex-col items-start">
 								<div>Coupon Used</div>
-								<div class="font-semibold">{{ order.payment.coupon.redacted_code }}</div>
+								<div class="font-semibold">{{ last_payment.coupon.redacted_code }}</div>
 							</div>
                             {% endif %}
 						</div>
